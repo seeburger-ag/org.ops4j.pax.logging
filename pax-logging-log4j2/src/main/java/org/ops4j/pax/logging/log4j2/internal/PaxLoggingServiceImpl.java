@@ -20,7 +20,10 @@ package org.ops4j.pax.logging.log4j2.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore.Entry;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
@@ -31,7 +34,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -64,6 +66,7 @@ public class PaxLoggingServiceImpl
     public static final String DEFAULT_SERVICE_LOG_LEVEL = "org.ops4j.pax.logging.DefaultServiceLog.level";
     public static final String MAX_ENTRIES = "pax.logging.entries.size";
     public static final String LOG4J2_CONFIG_FILE_KEY = "org.ops4j.pax.logging.log4j2.config.file";
+    public static final String LOG4J2_CONFIG_DEFAULTS_KEY = "org.ops4j.pax.logging.log4j2.defaults.file";
     public static final String LOG4J2_ASYNC_KEY = "org.ops4j.pax.logging.log4j2.async";
 
     private static final String LOGGER_CONTEXT_NAME = "pax-logging";
@@ -193,8 +196,16 @@ public class PaxLoggingServiceImpl
             config = ConfigurationFactory.getInstance().getConfiguration(m_log4jContext,
                       LOGGER_CONTEXT_NAME, new File(configfile.toString()).toURI());
         } else {
+            Properties props = new Properties();
+            Object defaultsFile = configuration.get(LOG4J2_CONFIG_DEFAULTS_KEY);
+            if (defaultsFile != null) {
+                try (InputStream inputStream = new FileInputStream(defaultsFile.toString())) {
+                    props.load(inputStream);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             try {
-                Properties props = new Properties();
                 for (Enumeration<String> keys = configuration.keys(); keys.hasMoreElements();) {
                     String key = keys.nextElement();
                     props.setProperty(key, configuration.get(key).toString());
