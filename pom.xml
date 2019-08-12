@@ -22,12 +22,25 @@
     <url>http://ops4j1.jira.com/browse/PAXLOGGING</url>
   </issueManagement>
 
-  <scm>
-    <connection>scm:git:https://github.com/ops4j/org.ops4j.pax.logging</connection>
-    <developerConnection>scm:git:https://github.com/ops4j/org.ops4j.pax.logging</developerConnection>
-    <url>https://github.com/ops4j/org.ops4j.pax.logging</url>
-    <tag>HEAD</tag>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:seeburger-ag/org.ops4j.pax.logging</connection>
+        <developerConnection>scm:git:git@github.com:seeburger-ag/org.ops4j.pax.logging</developerConnection>
+        <url>https://github.com/seeburger-ag/org.ops4j.pax.logging</url>
+    </scm>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${snapshot.repository.id}</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>${snapshot.repository.url}</url>
+        </snapshotRepository>
+        <repository>
+            <id>${release.repository.id}</id>
+            <name>Nexus Release Repository</name>
+            <url>${release.repository.url}</url>
+        </repository>
+    </distributionManagement>
 
   <build>
     <plugins>
@@ -98,7 +111,36 @@
           <artifactId>maven-shade-plugin</artifactId>
           <version>1.4</version>
         </plugin>
-        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <!-- deactivated for internal builds -->
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+        <!-- need to deactivate one of the two executions of the sources plugin. see https://issues.apache.org/jira/browse/MNG-5939 -->
+           <artifactId>maven-source-plugin</artifactId>
+           <version>2.1.2</version>
+           <executions>
+               <execution>
+                  <id>attach-sources</id>
+                   <phase>none</phase>
+               </execution>
+           </executions>
+        </plugin>
+
         <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
         <plugin>
         	<groupId>org.eclipse.m2e</groupId>
