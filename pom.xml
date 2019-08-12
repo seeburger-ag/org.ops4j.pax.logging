@@ -10,7 +10,7 @@
 
   <groupId>org.ops4j.pax</groupId>
   <artifactId>logging</artifactId>
-  <version>1.10.4-SNAPSHOT</version>
+  <version>1.10.4.SEE3</version>
   <packaging>pom</packaging>
 
   <name>OPS4J Pax Logging (Build POM)</name>
@@ -26,7 +26,8 @@
         <connection>scm:git:git@github.com:seeburger-ag/org.ops4j.pax.logging</connection>
         <developerConnection>scm:git:git@github.com:seeburger-ag/org.ops4j.pax.logging</developerConnection>
         <url>https://github.com/seeburger-ag/org.ops4j.pax.logging</url>
-    </scm>
+      <tag>logging-1.10.4.SEE3</tag>
+  </scm>
 
 
     <distributionManagement>
